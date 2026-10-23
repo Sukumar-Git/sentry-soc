@@ -4,9 +4,12 @@ from app.detection_engine import detect_event
 from app.risk_engine import calculate_risk
 from app.correlation_engine import correlate_events
 from app.incident_engine import create_incidents
+from app.threat_intel import enrich_ip
 
 
 def run_pipeline():
+    """Run the complete SENTRY security monitoring pipeline."""
+
     raw_logs = collect_logs()
 
     parsed_events = []
@@ -22,27 +25,42 @@ def run_pipeline():
 
         detection = detect_event(event)
 
-        if detection["alert"]:
+        if detection.get("alert"):
             risk = calculate_risk(event, detection)
+
+            # Enrich the source IP using the local threat feed.
+            source_ip = event.get("source_ip")
+
+            if source_ip:
+                threat_intel = enrich_ip(source_ip)
+            else:
+                threat_intel = {
+                    "ip": None,
+                    "status": "not_available",
+                    "source": "local_feed",
+                    "category": None,
+                    "description": "The event has no source IP address.",
+                }
 
             alerts.append({
                 "event": event,
                 "detection": detection,
-                "risk": risk
+                "risk": risk,
+                "threat_intel": threat_intel,
             })
 
     correlations = correlate_events(parsed_events)
 
     incidents = create_incidents(
         alerts,
-        correlations
+        correlations,
     )
 
     return {
         "events": parsed_events,
         "alerts": alerts,
         "correlations": correlations,
-        "incidents": incidents
+        "incidents": incidents,
     }
 
 
@@ -50,7 +68,6 @@ if __name__ == "__main__":
     results = run_pipeline()
 
     print("\n=== SENTRY PIPELINE RESULTS ===")
-
     print(f"\nEvents processed: {len(results['events'])}")
     print(f"Alerts generated: {len(results['alerts'])}")
     print(f"Correlations found: {len(results['correlations'])}")

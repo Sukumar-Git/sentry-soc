@@ -216,3 +216,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# SENTRY local runtime database
+sentry_incidents.db
+sentry_incidents.db-*
+
+# Temporary dashboard backups
+dashboard/dashboard_backup.py
+sentry_dashboard_replacement.py
+
+# Temporary write files
+*.tmp
