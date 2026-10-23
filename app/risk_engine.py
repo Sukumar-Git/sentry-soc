@@ -1,33 +1,79 @@
 def calculate_risk(event, detection):
+    """
+    Calculate a transparent risk score using detection severity
+    and event characteristics.
+    """
+
     score = 0
     factors = []
 
+    # --------------------------------------------------
+    # Detection rule contribution
+    # --------------------------------------------------
+
     if detection["alert"]:
         score += 20
+
         factors.append({
             "points": 20,
             "reason": "Detection rule matched"
         })
 
+        # --------------------------------------------------
+        # Detection severity contribution
+        # --------------------------------------------------
+
+        severity_points = {
+            "low": 5,
+            "medium": 10,
+            "high": 20,
+            "critical": 30
+        }
+
+        severity = detection.get("severity", "none").lower()
+        points = severity_points.get(severity, 0)
+
+        if points > 0:
+            score += points
+
+            factors.append({
+                "points": points,
+                "reason": f"{severity.capitalize()} detection severity"
+            })
+
+    # --------------------------------------------------
+    # Authentication failure contribution
+    # --------------------------------------------------
+
     if event["event_type"] == "authentication_failure":
         score += 10
+
         factors.append({
             "points": 10,
             "reason": "Authentication failure"
         })
 
+    # --------------------------------------------------
+    # Event level contribution
+    # --------------------------------------------------
+
     if event["level"] == "WARNING":
         score += 10
+
         factors.append({
             "points": 10,
             "reason": "Warning-level event"
         })
 
-    if score >= 70:
+    # --------------------------------------------------
+    # Determine risk level
+    # --------------------------------------------------
+
+    if score >= 60:
         risk_level = "critical"
-    elif score >= 50:
+    elif score >= 40:
         risk_level = "high"
-    elif score >= 30:
+    elif score >= 20:
         risk_level = "medium"
     else:
         risk_level = "low"
@@ -37,30 +83,3 @@ def calculate_risk(event, detection):
         "risk_level": risk_level,
         "factors": factors
     }
-
-
-if __name__ == "__main__":
-    test_event = {
-        "timestamp": "2026-09-19 07:31:12",
-        "level": "WARNING",
-        "event": "Failed login",
-        "event_type": "authentication_failure",
-        "username": "admin",
-        "source_ip": "192.168.1.20"
-    }
-
-    test_detection = {
-        "rule_id": "AUTH-001",
-        "alert": True,
-        "severity": "medium",
-        "reason": "Authentication failure detected",
-        "evidence": {
-            "username": "admin",
-            "source_ip": "192.168.1.20",
-            "timestamp": "2026-09-19 07:31:12"
-        }
-    }
-
-    result = calculate_risk(test_event, test_detection)
-
-    print(result)
