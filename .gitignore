@@ -226,3 +226,5 @@ sentry_dashboard_replacement.py
 
 # Temporary write files
 *.tmp
+# Keep the demonstration log required by the pipeline
+!logs/sample.log

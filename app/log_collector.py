@@ -1,7 +1,8 @@
 from pathlib import Path
 
 
-LOG_FILE = Path("logs/sample.log")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+LOG_FILE = PROJECT_ROOT / "logs" / "sample.log"
 
 
 def collect_logs():

@@ -265,3 +265,19 @@ The current implementation includes the security event processing pipeline, risk
 ## License
 
 See the `LICENSE` file in this repository for the applicable license terms.
+## Dashboard Screenshots
+
+### Security Overview
+![Security Overview](screenshots/01-security-overview.png)
+
+### Incident Management
+![Incident Management](screenshots/02-incident-management.png)
+
+### Incident Investigation
+![Incident Investigation](screenshots/03-incident-threat-intelligence.png)
+
+### Analyst Response and Alerts
+![Analyst Response](screenshots/04-analyst-response-and-alerts.png)
+
+### Threat Feed Management
+![Threat Feed Management](screenshots/05-threat-feed-management.png)

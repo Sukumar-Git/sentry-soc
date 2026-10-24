@@ -1,0 +1,7 @@
+2026-09-19 07:30:01 INFO User login successful username=sukumar ip=192.168.1.10
+2026-09-19 07:31:12 WARNING Failed login username=admin ip=192.168.1.20
+2026-09-19 07:31:15 WARNING Failed login username=admin ip=192.168.1.20
+2026-09-19 07:31:18 WARNING Failed login username=admin ip=192.168.1.20
+2026-09-19 07:35:00 WARNING Suspicious network connection ip=10.0.0.25
+2026-09-19 07:40:12 WARNING Connection to suspicious destination ip=185.220.101.5
+2026-09-19 07:31:25 WARNING User login successful username=admin ip=192.168.1.20
