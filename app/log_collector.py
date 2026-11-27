@@ -1,8 +1,11 @@
+import os
 from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-LOG_FILE = PROJECT_ROOT / "logs" / "sample.log"
+LOG_FILE = Path(
+    os.environ.get("SENTRY_LOG_FILE", PROJECT_ROOT / "logs" / "sample.log")
+)
 
 
 def collect_logs():

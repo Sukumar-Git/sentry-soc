@@ -281,3 +281,63 @@ See the `LICENSE` file in this repository for the applicable license terms.
 
 ### Threat Feed Management
 ![Threat Feed Management](screenshots/05-threat-feed-management.png)
+![tests](https://github.com/Sukumar-Git/sentry-soc/actions/workflows/tests.yml/badge.svg)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A["auth.log / app logs"] --> B[live_ingest]
+    H["SSH honeypot :2222"] --> L[("logs/live.log")]
+    B --> L
+    L --> C[collector + parser]
+    C --> D["detection rules + MITRE tags"]
+    D --> R[risk scoring]
+    R --> T["threat intel: local feed + AbuseIPDB"]
+    T --> X[correlation + incidents]
+    X --> S[("SQLite")]
+    X --> UI[Streamlit dashboard]
+    D --> N["alerts: console / Telegram"]
+    UI --> BL[simulated blocklist]
+```
+
+## Detection rules
+
+| Rule | Detects | MITRE technique |
+|------|---------|-----------------|
+| AUTH-001 / 002 | Failed login / brute-force pattern | T1110 Brute Force |
+| AUTH-003 | Failed sudo (privilege escalation attempt) | T1548 |
+| AUTH-004 | Account lockout | T1110 |
+| NET-002 | Connection to suspicious destination | T1071 |
+| NET-003 | Port scan | T1046 |
+| NET-004 | Large outbound transfer | T1048 |
+| NET-005 | Honeypot contact | T1595 |
+
+## Features added in v2
+- Live log ingestion (tails SSH auth logs, normalizes to SENTRY format)
+- MITRE ATT&CK tagging and a coverage page in the dashboard
+- Low-interaction SSH honeypot with log-injection protection
+- Live IP reputation via AbuseIPDB with a 24h cache and rate-limit handling
+- Alert notifications with de-duplication, and a simulated IP blocklist
+- GitHub Actions CI and Docker Compose
+
+## Quick start
+
+```powershell
+pip install -r requirements.txt
+python -m pytest
+
+# 3 terminals
+python -m app.honeypot
+$env:SENTRY_LOG_FILE = "logs\live.log"; python -m app.watch
+$env:SENTRY_LOG_FILE = "logs\live.log"; python -m streamlit run dashboard/dashboard.py
+```
+
+Or with Docker: `docker compose up --build`
+
+Optional environment variables: `ABUSEIPDB_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+
+## Safety notes
+- The blocklist is a simulation. No firewall rules are changed.
+- The honeypot is low-interaction: it sends a banner and logs the contact. Run it locally or on an isolated VM, and never port-forward it from a home network.
+- API keys come from environment variables only and are never stored in the repo.

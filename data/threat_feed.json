@@ -2,9 +2,5 @@
     "198.51.100.25": {
         "category": "test_indicator",
         "description": "Synthetic suspicious IP for offline demonstrations."
-    },
-    "203.0.113.50": {
-        "category": "test_indicator",
-        "description": "Synthetic threat indicator for SENTRY testing."
     }
 }

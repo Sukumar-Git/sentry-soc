@@ -4,7 +4,7 @@ from app.detection_engine import detect_event
 from app.risk_engine import calculate_risk
 from app.correlation_engine import correlate_events
 from app.incident_engine import create_incidents
-from app.threat_intel import enrich_ip
+from app.enrichment import enrich_ip_live as enrich_ip
 
 
 def run_pipeline():

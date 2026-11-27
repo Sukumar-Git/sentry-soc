@@ -228,3 +228,8 @@ sentry_dashboard_replacement.py
 *.tmp
 # Keep the demonstration log required by the pipeline
 !logs/sample.log
+# AbuseIPDB lookup cache
+data/abuseipdb_cache.json
+# SENTRY response state
+data/blocklist.json
+data/notified_alerts.json

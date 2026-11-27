@@ -15,6 +15,10 @@ LOG_PATTERN = re.compile(
 def classify_event(message):
     message_lower = message.lower()
 
+
+def classify_event(message):
+    message_lower = message.lower()
+
     if "failed login" in message_lower:
         return "authentication_failure"
 
@@ -26,6 +30,21 @@ def classify_event(message):
 
     if "connection to suspicious destination" in message_lower:
         return "suspicious_destination"
+
+    if "sudo authentication failure" in message_lower:
+        return "privilege_escalation_attempt"
+
+    if "account locked" in message_lower:
+        return "account_lockout"
+
+    if "port scan detected" in message_lower:
+        return "port_scan"
+
+    if "large outbound transfer" in message_lower:
+        return "data_exfiltration"
+
+    if "honeypot connection" in message_lower:
+        return "honeypot_connection"
 
     return "unknown"
 

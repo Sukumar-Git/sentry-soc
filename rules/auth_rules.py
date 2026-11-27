@@ -3,7 +3,13 @@ AUTH_RULES = {
         "name": "Authentication Failure",
         "description": "Detects a failed authentication attempt.",
         "event_type": "authentication_failure",
-        "severity": "medium"
+        "severity": "medium",
+        "evidence_fields": ["username", "source_ip", "timestamp"],
+        "mitre": {
+            "technique_id": "T1110",
+            "technique": "Brute Force",
+            "tactic": "Credential Access",
+        },
     },
 
     "AUTH-002": {
@@ -14,6 +20,38 @@ AUTH_RULES = {
             "the same source."
         ),
         "event_type": "authentication_failure",
-        "severity": "high"
-    }
+        "severity": "high",
+        "evidence_fields": ["username", "source_ip", "timestamp"],
+        "mitre": {
+            "technique_id": "T1110",
+            "technique": "Brute Force",
+            "tactic": "Credential Access",
+        },
+    },
+
+    "AUTH-003": {
+        "name": "Privilege Escalation Attempt",
+        "description": "Detects a failed attempt to gain elevated privileges (sudo).",
+        "event_type": "privilege_escalation_attempt",
+        "severity": "high",
+        "evidence_fields": ["username", "source_ip", "timestamp"],
+        "mitre": {
+            "technique_id": "T1548",
+            "technique": "Abuse Elevation Control Mechanism",
+            "tactic": "Privilege Escalation",
+        },
+    },
+
+    "AUTH-004": {
+        "name": "Account Lockout",
+        "description": "Detects an account being locked after repeated failures.",
+        "event_type": "account_lockout",
+        "severity": "medium",
+        "evidence_fields": ["username", "source_ip", "timestamp"],
+        "mitre": {
+            "technique_id": "T1110",
+            "technique": "Brute Force",
+            "tactic": "Credential Access",
+        },
+    },
 }
